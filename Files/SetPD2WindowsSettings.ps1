@@ -1,3 +1,19 @@
+#############################################################################
+# https://stackoverflow.com/a/38981021
+#
+# If Powershell is running the 32-bit version on a 64-bit machine, we 
+# need to force powershell to run in 64-bit mode .
+#############################################################################
+if ($env:PROCESSOR_ARCHITEW6432 -eq "AMD64") {
+    if ($myInvocation.Line) {
+        &"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" $myInvocation.Line
+    }else{
+        &"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" -file "$($myInvocation.InvocationName)" $args
+    }
+exit $lastexitcode
+}
+
+
 # Setup
 $ProjectD2InstallPath         = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $Diablo2InstallPath           = Split-Path -Path $ProjectD2InstallPath -Parent
