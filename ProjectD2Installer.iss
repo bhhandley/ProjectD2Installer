@@ -59,6 +59,8 @@ Type: files; Name: "{app}\ProjectD2\ProjectDiablo.cfg"
 Type: files; Name: "{app}\ProjectD2\bncache.dat"
 Type: files; Name: "{app}\ProjectD2\BnetLog.txt"
 Type: files; Name: "{app}\ProjectD2\settings.db"
+Type: files; Name: "{app}\ProjectD2\SetPD2WindowsSettings.ps1"
+Type: files; Name: "{app}\ProjectD2\RemovePD2WindowsSettings.ps1"
 
 [Files]
 Source: Files\*; DestDir: "{app}\ProjectD2"; Flags: ignoreversion
@@ -79,10 +81,28 @@ Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /passive /norestart";
 
 Filename: "{app}\ProjectD2\MpqFixer\FIX_MPQS_RUN_AS_ADMIN.bat"; WorkingDir: "{app}\ProjectD2\MpqFixer"; Flags: runascurrentuser; Check: ChangeStatusLabel('MPQFixer')
 
+Filename: "powershell.exe"; \
+  Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\SetPD2WindowsSettings.ps1"""; \
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser 64bit runhidden; Check: IsWin64
+
+Filename: "powershell.exe"; \
+  Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\SetPD2WindowsSettings.ps1"""; \
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser runhidden; Check: "not IsWin64"
+
 Filename: "{app}\ProjectD2\PD2Launcher.exe"; WorkingDir: "{app}\ProjectD2"; Description: "{cm:LaunchProgram,Project Diablo 2}"; Flags: nowait postinstall runascurrentuser skipifsilent; Check: not OpenRegisterAccountUrl
 
 [UninstallDelete]
+
 Type: filesandordirs; Name: "{app}\ProjectD2"
+
+[UninstallRun]
+Filename: "powershell.exe"; \
+  Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\RemovePD2WindowsSettings.ps1"""; \
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser 64bit runhidden; Check: IsWin64
+
+Filename: "powershell.exe"; \
+  Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\RemovePD2WindowsSettings.ps1"""; \
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser runhidden; Check: "not IsWin64"
 
 
 [Registry]
@@ -137,7 +157,7 @@ begin
       else
       begin
         MsgBox(FmtMessage(ExpandConstant('{cm:GameNotFound}'), [WizardForm.DirEdit.Text]), mbError, MB_OK);
-      end
+      end;
 
       Result := false;
     end
