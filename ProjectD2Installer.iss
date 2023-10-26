@@ -61,10 +61,15 @@ Type: files; Name: "{app}\ProjectD2\BnetLog.txt"
 Type: files; Name: "{app}\ProjectD2\settings.db"
 Type: files; Name: "{app}\ProjectD2\SetPD2WindowsSettings.ps1"
 Type: files; Name: "{app}\ProjectD2\RemovePD2WindowsSettings.ps1"
+Type: files; Name: "{app}\ProjectD2\PlugY.dll"
+Type: files; Name: "{app}\ProjectD2\PlugY.exe"
+Type: files; Name: "{app}\ProjectD2\PlugY.ini"
+Type: files; Name: "{app}\ProjectD2\PlugY_The_Survival_Kit_-_Readme.txt"
 
 [Files]
 Source: Files\*; DestDir: "{app}\ProjectD2"; Flags: ignoreversion
 Source: Files\MpqFixer\*; DestDir: "{app}\ProjectD2\MpqFixer"; Flags: ignoreversion
+Source: Files\PlugY\*; DestDir: "{app}\ProjectD2\PlugY"; Flags: ignoreversion
 
 Source: Resources\VC_redist.x86.exe; Flags: dontcopy
 Source: Resources\VC_redist.x64.exe; Flags: dontcopy
