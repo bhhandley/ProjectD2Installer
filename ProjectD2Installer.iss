@@ -10,6 +10,7 @@ InstallingApp=Installing %1, this may take several minutes...
 EnglishInstallRequired=Project Diablo 2 requires a -English- game installation of Diablo II: Lord of Destruction, please do not try to install it on any other game language or the game will crash randomly.
 SelectDiablo2Folder=Please select a valid (English) Diablo II: Lord of Destruction folder.
 WantToRegisterAccount=You must create an in-game account on the Project Diablo 2 website to be able to play online games.%n%nWould you like to visit the website now?
+PromptToCreateOverrides=Various Windows overrides are required to prevent certain issues when playing D2 Mods.  This includes Windows Defender, Exploit Protection, High-Performance Graphics and Compatibility Mode.%n%nYou can view more information about these overrides in the Support FAQ on the PD2 Wiki.%n%nDo you wish to have the installer apply these overrides for you?  You can always apply or remove them later from the Launcher Options.
 CheckFile=d2exp.mpq
 CheckFileClassic=d2data.mpq
 GameRegEng=SOFTWARE\Blizzard Entertainment\Diablo II
@@ -70,6 +71,7 @@ Type: files; Name: "{app}\ProjectD2\PlugY_The_Survival_Kit_-_Readme.txt"
 Source: Files\*; DestDir: "{app}\ProjectD2"; Flags: ignoreversion
 Source: Files\MpqFixer\*; DestDir: "{app}\ProjectD2\MpqFixer"; Flags: ignoreversion
 Source: Files\PlugY\*; DestDir: "{app}\ProjectD2\PlugY"; Flags: ignoreversion
+Source: Files\filters\local\*; DestDir: "{app}\ProjectD2\filters\local"; Flags: ignoreversion
 
 Source: Resources\VC_redist.x86.exe; Flags: dontcopy
 Source: Resources\VC_redist.x64.exe; Flags: dontcopy
@@ -88,11 +90,11 @@ Filename: "{app}\ProjectD2\MpqFixer\FIX_MPQS_RUN_AS_ADMIN.bat"; WorkingDir: "{ap
 
 Filename: "powershell.exe"; \
   Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\SetPD2WindowsSettings.ps1"""; \
-  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser 64bit runhidden; Check: IsWin64
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser 64bit; Check: IsWin64 and ApplyOverrides
 
 Filename: "powershell.exe"; \
   Parameters: "-ExecutionPolicy Bypass -File ""{app}\ProjectD2\SetPD2WindowsSettings.ps1"""; \
-  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser runhidden; Check: "not IsWin64"
+  WorkingDir: {app}\ProjectD2; Flags: runascurrentuser; Check: (not IsWin64) and ApplyOverrides
 
 Filename: "{app}\ProjectD2\PD2Launcher.exe"; WorkingDir: "{app}\ProjectD2"; Description: "{cm:LaunchProgram,Project Diablo 2}"; Flags: nowait postinstall runascurrentuser skipifsilent; Check: not OpenRegisterAccountUrl
 
@@ -183,6 +185,19 @@ begin
     Result:=true;
   end
 end;
+
+function ApplyOverrides(): Boolean;
+var
+  ErrorCode: Integer;
+begin
+  Result := false;
+
+  if MsgBox(ExpandConstant('{cm:PromptToCreateOverrides}'), mbConfirmation, MB_YESNO) = IDYES then
+  begin
+    Result:=true;
+  end
+end;
+
 
 function ChangeStatusLabel(AppName: String): Boolean;
 begin
